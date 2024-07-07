@@ -26,4 +26,9 @@ public class LoansController {
     }
 
 
+//    //선택한 도서 반납
+//    @PostMapping("/book/{bookId}")
+//    public ResponseEntity<String> returnBook(@PathVariable Long bookId) {
+//
+//    }
 }

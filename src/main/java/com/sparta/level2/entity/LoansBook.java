@@ -16,7 +16,7 @@ public class LoansBook { //대출 현황
     private Long bookId;
     private Long userId;
 
-    private boolean isReturned; //반납상태 (여부)
+    private boolean returned; //반납상태 (여부)
 
     private LocalDate loneDate;   //대출일
     private LocalDate returnDate;  //반납일
@@ -26,7 +26,7 @@ public class LoansBook { //대출 현황
     public LoansBook(Long bookId, Long userId) {
         this.bookId = bookId;
         this.userId = userId;
-        this.isReturned = false;
+        this.returned = false;
         this.loneDate = LocalDate.now();
 
     }

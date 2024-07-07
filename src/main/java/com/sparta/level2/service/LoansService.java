@@ -9,6 +9,7 @@ import com.sparta.level2.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -34,6 +35,13 @@ public class LoansService {
             return "회원이 존재하지 않습니다.";
         }
 
+        //반납하지 않은 책이 있는지 확인(유저 아이디로 확인)
+        List<LoansBook> loans = loansRepository.findByUserIdAndReturnedIsFalse(userId); //LoansBook엔티티에 유저아이디로 returned에 False가 있는지 찾기
+        if (!loans.isEmpty()) {
+            return "아직 반납하지 않은 도서가 있습니다!";
+        }
+
+
         //도서 존재 확인
         Optional<Book> bookOptional = bookRepository.findById(bookId); //이건Optional 객체 (null처리를 위해)
         if (bookOptional.isEmpty()) {
@@ -47,6 +55,8 @@ public class LoansService {
         if (!book.isAvilable()) { //isAvilable() 기본값이 true
             return "이미 대출된 책입니다.";
         }
+
+
 
         //도서의 대출가능 상태를 false로 변경 메서드
         book.loan();
