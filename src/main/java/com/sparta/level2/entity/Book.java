@@ -21,6 +21,8 @@ public class Book extends Timestamped {
     private String language;
     private String publisher;
 
+    private boolean isAvilable = true; //대출 가능 여부
+
 
     public Book(CreateBookRequestDto requestDto) {
         this.title = requestDto.getTitle();
@@ -31,6 +33,13 @@ public class Book extends Timestamped {
 
     //JPA 사용을 위한 기본 생성자
     public Book() {
-
     }
+
+
+    public void loan() {
+        this.isAvilable = false;
+    }
+
+
+
 }

@@ -15,7 +15,7 @@ public class User {
 
     private String name;
 
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     private Gender gender;
 
     private String ssn;
