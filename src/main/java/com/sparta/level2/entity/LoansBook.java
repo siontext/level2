@@ -33,4 +33,12 @@ public class LoansBook { //대출 현황
 
     public LoansBook() {
     }
+
+    //반납 메서드
+    public void setReturnedAndDate() {
+        this.returned = true;
+        this.returnDate = LocalDate.now();
+    }
+
+
 }

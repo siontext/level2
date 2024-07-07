@@ -35,7 +35,7 @@ public class LoansService {
             return "회원이 존재하지 않습니다.";
         }
 
-        //반납하지 않은 책이 있는지 확인(유저 아이디로 확인)
+        //반납하지 않은 책이 있는지 확인(대출상태엔티티에서 유저 아이디로 확인)
         List<LoansBook> loans = loansRepository.findByUserIdAndReturnedIsFalse(userId); //LoansBook엔티티에 유저아이디로 returned에 False가 있는지 찾기
         if (!loans.isEmpty()) {
             return "아직 반납하지 않은 도서가 있습니다!";
@@ -57,7 +57,6 @@ public class LoansService {
         }
 
 
-
         //도서의 대출가능 상태를 false로 변경 메서드
         book.loan();
 
@@ -68,6 +67,31 @@ public class LoansService {
 
 
         return "대출되었습니다.";
+    }
+
+    //선택한 도서 반납
+    @Transactional
+    public String returnBook(Long userId, Long bookId) {
+
+        //회원 확인
+        Optional<User> userOptional = userRepository.findById(userId); //Optional 객체 (null처리를 위해)
+        if (userOptional.isEmpty()) {
+            return "회원이 존재하지 않습니다.";
+        }
+
+        //빌린 책 확인
+        Optional<LoansBook> loansBookOptional = loansRepository.findById(bookId); //Optional 객체 (null처리를 위해)
+        if (loansBookOptional.isEmpty()) {
+            return "대출되지 않은 책입니다.";
+        }
+
+        //빌린 책 반납상태 -> true로 변환
+        LoansBook loansBook = loansBookOptional.get(); //Optional 객체 -> 엔티티 객체로 변환
+        loansBook.setReturnedAndDate(); //반납상태 -> true로, 반납일은 오늘로 찍어주는 메서드
+
+
+        return "반납이 완료되었습니다";
 
     }
+
 }
