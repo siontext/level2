@@ -1,5 +1,6 @@
 package com.sparta.level2.service;
 
+import com.sparta.level2.dto.LoanResponseDto;
 import com.sparta.level2.entity.Book;
 import com.sparta.level2.entity.LoansBook;
 import com.sparta.level2.entity.User;
@@ -9,6 +10,8 @@ import com.sparta.level2.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,7 +22,7 @@ public class LoansService {
     private final UserRepository userRepository;
     private final BookRepository bookRepository;
 
-    public LoansService(LoansRepository loansRepository , UserRepository userRepository , BookRepository bookRepository) {
+    public LoansService(LoansRepository loansRepository, UserRepository userRepository, BookRepository bookRepository) {
         this.loansRepository = loansRepository;
         this.userRepository = userRepository;
         this.bookRepository = bookRepository;
@@ -92,6 +95,36 @@ public class LoansService {
 
         return "반납이 완료되었습니다";
 
+    }
+
+
+    //대출 내역 조회
+    public List<LoanResponseDto> getAllLoans(Long userId) {
+
+        //대출 내역을 담아 반환해줄 컬렉션리스트
+        List<LoanResponseDto> responseDtos = new ArrayList<>();
+
+        //회원 확인
+        User user = userRepository.findById(userId).orElseThrow(
+                () -> new IllegalArgumentException("해당 유저가 존재하지 않습니다."));
+
+        //대출정보객체에 -> 같은 userId를 매핑 해주기
+        List<LoansBook> loansBooks = loansRepository.findByUserId(userId);
+
+        //LoansBook(대출정보)에 userId 매핑했고, 이번엔 bookId를 매핑해 줘야함 (반복문이니깐  List랑 비슷)
+        for (LoansBook loansBook : loansBooks) {
+            Book book = bookRepository.findById(loansBook.getId()).orElseThrow(
+                    () -> new IllegalArgumentException("도서가 존재하지 않습니다."));
+
+            //dto에 반환에 필요한 데이터들 담아주기 (이렇게 담아주면
+            LoanResponseDto loanResponseDto = new LoanResponseDto(user, book, loansBook);
+            responseDtos.add(loanResponseDto); // 컬렉션 리스트에 담아주기
+        }
+
+        //오름차순 정렬해주기
+        responseDtos.sort(Comparator.comparing(LoanResponseDto::getLoanDate));
+
+        return responseDtos;
     }
 
 }

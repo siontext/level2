@@ -9,4 +9,6 @@ import java.util.List;
 public interface LoansRepository extends JpaRepository<LoansBook, Long> {
 
     List<LoansBook> findByUserIdAndReturnedIsFalse(Long userId);
+
+    List<LoansBook> findByUserId(Long userId);
 }
